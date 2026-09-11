@@ -22,3 +22,11 @@ class RecognitionResultResponse(CamelModel):
 class VisualizationResponse(CamelModel):
     waterfall: list[list[float]]
     constellation: list[dict]
+
+
+class BuiltinResponse(CamelModel):
+    modulation: str
+    confidence: float
+    snr: float
+    waterfall: list[list[float]]
+    constellation: list[dict]

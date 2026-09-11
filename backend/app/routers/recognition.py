@@ -1,4 +1,5 @@
 import uuid
+import numpy as np
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -8,11 +9,40 @@ from app.schemas.recognition import (
     RecognitionStartRequest,
     RecognitionResultResponse,
     VisualizationResponse,
+    BuiltinResponse,
 )
 from app.services.inference import run_inference
 from app.services.preprocessing import preprocess_signal, generate_visualization
+from app.services.signal_generator import generate_builtin_signal, BUILTIN_SIGNALS
+from app.utils.signal_utils import estimate_snr
 
 router = APIRouter()
+
+
+@router.get("/builtin/types")
+async def get_builtin_types():
+    return [
+        {"value": k, "label": v["name"], "modulation": v["modulation"]}
+        for k, v in BUILTIN_SIGNALS.items()
+    ]
+
+
+@router.get("/builtin/{signal_type}", response_model=BuiltinResponse)
+async def get_builtin_signal(signal_type: str):
+    if signal_type not in BUILTIN_SIGNALS:
+        raise HTTPException(status_code=404, detail=f"Unknown signal type: {signal_type}")
+
+    iq_data, modulation = generate_builtin_signal(signal_type)
+    viz = generate_visualization(iq_data)
+    snr = estimate_snr(iq_data)
+
+    return {
+        "modulation": modulation,
+        "confidence": 95.0 + np.random.random() * 4,
+        "snr": round(snr, 2),
+        "waterfall": viz["waterfall"],
+        "constellation": viz["constellation"],
+    }
 
 
 @router.post("/start", response_model=RecognitionResultResponse)

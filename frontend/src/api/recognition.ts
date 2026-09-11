@@ -29,3 +29,15 @@ export function getVisualization(datasetId: string) {
     constellation: { i: number; q: number }[]
   }>(`/recognition/visualization/${datasetId}`)
 }
+
+export interface BuiltinSignalResponse {
+  modulation: string
+  confidence: number
+  snr: number
+  waterfall: number[][]
+  constellation: { i: number; q: number }[]
+}
+
+export function getBuiltinSignal(signalType: string) {
+  return request.get<BuiltinSignalResponse>(`/recognition/builtin/${signalType}`)
+}

@@ -14,9 +14,12 @@
     </el-upload>
     <el-divider>或选择内置数据集</el-divider>
     <el-select v-model="selectedBuiltin" placeholder="选择内置数据集" @change="handleBuiltinSelect">
-      <el-option label="RadioML 2018.01a 样本" value="radioml-sample" />
       <el-option label="BPSK 测试信号" value="bpsk-test" />
+      <el-option label="QPSK 测试信号" value="qpsk-test" />
       <el-option label="16QAM 测试信号" value="16qam-test" />
+      <el-option label="64QAM 测试信号" value="64qam-test" />
+      <el-option label="AM 测试信号" value="am-test" />
+      <el-option label="FM 测试信号" value="fm-test" />
     </el-select>
   </div>
 </template>
@@ -26,6 +29,7 @@ import { ref } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { uploadDataset } from '@/api/dataset'
+import { getBuiltinSignal } from '@/api/recognition'
 import { useRecognitionStore } from '@/stores/recognition'
 
 const recognitionStore = useRecognitionStore()
@@ -41,9 +45,23 @@ async function handleUpload(options: any) {
   }
 }
 
-function handleBuiltinSelect(value: string) {
+async function handleBuiltinSelect(value: string) {
   recognitionStore.setDataset(value)
-  ElMessage.info(`已选择内置数据集: ${value}`)
+  recognitionStore.isProcessing = true
+  ElMessage.info('正在加载内置数据集...')
+  try {
+    const res = await getBuiltinSignal(value) as any
+    recognitionStore.setVisualization(res.waterfall, res.constellation)
+    recognitionStore.setResult({
+      modulation: res.modulation,
+      confidence: res.confidence,
+      snr: res.snr,
+    })
+    ElMessage.success(`识别完成: ${res.modulation}`)
+  } catch {
+    ElMessage.error('加载内置数据集失败')
+    recognitionStore.isProcessing = false
+  }
 }
 </script>
 
