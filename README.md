@@ -1,13 +1,58 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 2c832b456ea3dda8df0ba4538f1102ac_dfc5b791ada111f1af37525400826444
-    ReservedCode1: +YnZEYgXqzPFk1+Oosp2/Xkz1dk1DhlUlvCdaNhiitZVK6zub+7QEJONVbl95cRKe6CO41Aq9g80ExIaGX7IzDfhxmf7syP+94lf3stlh09ccONlpgA2+u43WGX9TJcotFfX1PwpJYUjeeJ9JXvEqrs4ueUN//IXV2IHCnaZT5FY73L8qXG5iE9iR6A=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 2c832b456ea3dda8df0ba4538f1102ac_dfc5b791ada111f1af37525400826444
-    ReservedCode2: +YnZEYgXqzPFk1+Oosp2/Xkz1dk1DhlUlvCdaNhiitZVK6zub+7QEJONVbl95cRKe6CO41Aq9g80ExIaGX7IzDfhxmf7syP+94lf3stlh09ccONlpgA2+u43WGX9TJcotFfX1PwpJYUjeeJ9JXvEqrs4ueUN//IXV2IHCnaZT5FY73L8qXG5iE9iR6A=
----
+# 频谱智瞳 — AI 无线信号识别与频谱监测平台
 
-# ICT
-*（内容由AI生成，仅供参考）*
+> 基于 AI 的无线信号调制识别、参数估计与频谱可视化平台
+
+## 项目简介
+
+频谱智瞳是一个端到端的无线信号智能识别平台，支持用户上传 IQ 数据集（.npy/.wav），
+通过 AI 模型自动识别调制方式（AM/FM/BPSK/QPSK/16QAM/64QAM 等）、估计 SNR 等参数，
+并以频谱瀑布图、星座图等形式可视化展示识别结果。
+
+## 技术栈
+
+| 层级 | 技术选型 |
+|------|---------|
+| 前端 | Vue3 + TypeScript + Vite + ECharts + WebSocket |
+| 后端 | FastAPI + SQLAlchemy + Redis |
+| AI | PyTorch + ONNX（信号分类 + 参数估计） |
+| 数据库 | MySQL + Redis |
+
+## 项目结构
+
+```
+ICT/
+├── frontend/          # Vue3 前端（可视化 Demo 页）
+├── backend/           # FastAPI 后端（API 网关 + 任务调度）
+├── ai/                # AI 模块（训练 / 导出 / 推理）
+└── docs/              # 项目文档
+```
+
+## 快速开始
+
+### 后端
+
+```bash
+cd backend
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 前端
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### AI 模块
+
+```bash
+cd ai
+pip install -r requirements.txt
+```
+
+## 文档
+
+- [系统架构方案](docs/频谱智瞳_系统架构方案.md)
