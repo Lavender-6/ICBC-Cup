@@ -25,6 +25,17 @@ async def startup():
     await init_db()
 
 
+@app.get("/")
+async def root():
+    return {
+        "service": "频谱智瞳 API",
+        "version": "0.1.0",
+        "status": "running",
+        "docs": "/docs",
+        "health": "/api/health",
+    }
+
+
 @app.get("/api/health")
 async def health():
     return {"status": "ok"}

@@ -1,20 +1,18 @@
-from pydantic import BaseModel
 from datetime import datetime
 
+from app.schemas.base import CamelModel
 
-class DatasetBase(BaseModel):
+
+class DatasetBase(CamelModel):
     name: str
     format: str
     size: int
 
 
-class DatasetResponse(BaseModel):
+class DatasetResponse(CamelModel):
     id: str
     name: str
     format: str
     size: int
     status: str
     created_at: datetime
-
-    class Config:
-        from_attributes = True

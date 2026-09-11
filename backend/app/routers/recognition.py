@@ -39,14 +39,6 @@ async def start_recognition(req: RecognitionStartRequest, db: Session = Depends(
     return record
 
 
-@router.get("/{record_id}", response_model=RecognitionResultResponse)
-async def get_recognition_result(record_id: str, db: Session = Depends(get_db)):
-    record = db.query(RecognitionRecord).filter(RecognitionRecord.id == record_id).first()
-    if not record:
-        raise HTTPException(status_code=404, detail="Record not found")
-    return record
-
-
 @router.get("/history", response_model=list[RecognitionResultResponse])
 async def get_history(db: Session = Depends(get_db)):
     return db.query(RecognitionRecord).order_by(RecognitionRecord.created_at.desc()).all()
@@ -60,3 +52,11 @@ async def get_visualization(dataset_id: str, db: Session = Depends(get_db)):
     iq_data = preprocess_signal(dataset.file_path, dataset.format)
     viz = generate_visualization(iq_data)
     return viz
+
+
+@router.get("/{record_id}", response_model=RecognitionResultResponse)
+async def get_recognition_result(record_id: str, db: Session = Depends(get_db)):
+    record = db.query(RecognitionRecord).filter(RecognitionRecord.id == record_id).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Record not found")
+    return record

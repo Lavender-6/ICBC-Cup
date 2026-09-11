@@ -5,7 +5,7 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    database_url: str = "mysql+pymysql://root:password@localhost:3306/spectrum_insight"
+    database_url: str = "sqlite:///./spectrum_insight.db"
     redis_url: str = "redis://localhost:6379/0"
     upload_dir: str = "./uploads"
     max_upload_size_mb: int = 100

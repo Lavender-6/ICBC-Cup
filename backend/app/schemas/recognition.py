@@ -1,13 +1,14 @@
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
+from app.schemas.base import CamelModel
 
-class RecognitionStartRequest(BaseModel):
+
+class RecognitionStartRequest(CamelModel):
     dataset_id: str
 
 
-class RecognitionResultResponse(BaseModel):
+class RecognitionResultResponse(CamelModel):
     id: str
     dataset_id: str
     modulation: str
@@ -17,10 +18,7 @@ class RecognitionResultResponse(BaseModel):
     freq_offset: Optional[float] = None
     created_at: datetime
 
-    class Config:
-        from_attributes = True
 
-
-class VisualizationResponse(BaseModel):
+class VisualizationResponse(CamelModel):
     waterfall: list[list[float]]
     constellation: list[dict]

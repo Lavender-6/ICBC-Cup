@@ -51,3 +51,6 @@ backend/uploads/
 # Logs
 *.log
 logs/
+
+# SQLite
+*.db

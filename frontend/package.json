@@ -24,5 +24,8 @@
     "vite": "^5.2.0",
     "vue-tsc": "^2.0.0",
     "@types/node": "^20.12.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "vue-demi"]
   }
 }
