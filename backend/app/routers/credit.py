@@ -51,3 +51,21 @@ async def get_alerts(enterprise_id: str, db: Session = Depends(get_db)):
 async def check_alerts(enterprise_id: str, db: Session = Depends(get_db)):
     alerts = generate_risk_alerts(db, enterprise_id)
     return {"generated": len(alerts), "alerts": alerts}
+
+
+@router.get("/risk-trend/{enterprise_id}")
+async def risk_trend(enterprise_id: str, db: Session = Depends(get_db)):
+    from app.models.milestone import Milestone
+    milestones = db.query(Milestone).filter(Milestone.enterprise_id == enterprise_id).order_by(Milestone.created_at).all()
+    points = []
+    for ms in milestones:
+        date = (ms.actual_date or ms.expected_date)
+        if date:
+            risk = round((1.0 - ms.progress) * 0.6 + 0.2, 4)
+            points.append({
+                "date": date.isoformat()[:10],
+                "risk_score": risk,
+                "milestone": ms.name,
+                "progress": round(ms.progress, 4),
+            })
+    return points

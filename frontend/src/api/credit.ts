@@ -37,3 +37,14 @@ export function getAlerts(enterpriseId: string) {
 export function checkAlerts(enterpriseId: string) {
   return request.post(`/credit/alerts/${enterpriseId}/check`)
 }
+
+export interface RiskTrendPoint {
+  date: string
+  risk_score: number
+  milestone: string
+  progress: number
+}
+
+export function getRiskTrend(enterpriseId: string) {
+  return request.get<RiskTrendPoint[]>(`/credit/risk-trend/${enterpriseId}`)
+}

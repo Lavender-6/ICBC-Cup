@@ -1,5 +1,13 @@
 <template>
-  <div class="patent-network" ref="chartRef"></div>
+  <div class="patent-network-wrap">
+    <div class="chart-toolbar">
+      <el-radio-group v-model="chartType" size="small" @change="renderChart">
+        <el-radio-button value="line">折线图</el-radio-button>
+        <el-radio-button value="graph">力导向网络</el-radio-button>
+      </el-radio-group>
+    </div>
+    <div class="patent-network" ref="chartRef"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -9,15 +17,15 @@ import { getPatents, type PatentNetwork } from '@/api/enterprise'
 
 const props = defineProps<{ enterpriseId: string }>()
 const chartRef = ref<HTMLElement>()
+const chartType = ref<'line' | 'graph'>('line')
 let chart: echarts.ECharts | null = null
+let networkData: PatentNetwork | null = null
 
-function renderChart(data: PatentNetwork) {
-  if (!chart) return
-
-  const sorted = [...data.nodes]
+function renderLineChart() {
+  if (!chart || !networkData) return
+  const sorted = [...networkData.nodes]
     .filter((n: any) => n.filed_at)
     .sort((a: any, b: any) => a.filed_at.localeCompare(b.filed_at))
-
   const dates = sorted.map((n: any) => n.filed_at.slice(0, 10))
   const citedCounts = sorted.map((n: any) => n.cited_count)
   const qualities = sorted.map((n: any) => Number((n.quality * 100).toFixed(2)))
@@ -33,30 +41,50 @@ function renderChart(data: PatentNetwork) {
       { type: 'value', name: '质量(%)', position: 'right', max: 100 },
     ],
     series: [
-      {
-        name: '引用次数',
-        type: 'line',
-        data: citedCounts,
-        smooth: true,
-        itemStyle: { color: '#409eff' },
-        areaStyle: { opacity: 0.1 },
-      },
-      {
-        name: '质量评分(%)',
-        type: 'line',
-        yAxisIndex: 1,
-        data: qualities,
-        smooth: true,
-        itemStyle: { color: '#67c23a' },
-      },
+      { name: '引用次数', type: 'line', data: citedCounts, smooth: true, itemStyle: { color: '#409eff' }, areaStyle: { opacity: 0.1 } },
+      { name: '质量评分(%)', type: 'line', yAxisIndex: 1, data: qualities, smooth: true, itemStyle: { color: '#67c23a' } },
     ],
-  })
+  }, true)
+}
+
+function renderGraphChart() {
+  if (!chart || !networkData) return
+  const nodes = networkData.nodes.map((n: any) => ({
+    id: n.id,
+    name: n.title?.length > 10 ? n.title.slice(0, 10) + '...' : n.title,
+    symbolSize: 10 + n.pagerank * 200,
+    itemStyle: { color: getColorByQuality(n.quality) },
+    value: `PR: ${n.pagerank}\n引用: ${n.in_degree}\n质量: ${(n.quality * 100).toFixed(1)}%`,
+  }))
+  const links = networkData.edges.map((e: any) => ({ source: e.source, target: e.target }))
+  chart.setOption({
+    title: { text: '专利引用网络', left: 'center', textStyle: { fontSize: 14 } },
+    tooltip: { formatter: (p: any) => p.dataType === 'node' ? `${p.data.name}\n${p.data.value}` : '' },
+    series: [{
+      type: 'graph', layout: 'force', roam: true, draggable: true,
+      force: { repulsion: 100, edgeLength: 50, gravity: 0.1 },
+      label: { show: true, fontSize: 8 },
+      lineStyle: { color: '#aaa', curveness: 0.1 },
+      data: nodes, links,
+    }],
+  }, true)
+}
+
+function renderChart() {
+  if (chartType.value === 'line') renderLineChart()
+  else renderGraphChart()
+}
+
+function getColorByQuality(q: number): string {
+  if (q > 0.7) return '#67c23a'
+  if (q > 0.4) return '#e6a23c'
+  return '#f56c6c'
 }
 
 async function loadData() {
   try {
-    const data = await getPatents(props.enterpriseId) as any
-    if (chart) renderChart(data)
+    networkData = await getPatents(props.enterpriseId) as any
+    if (chart) renderChart()
   } catch {}
 }
 
@@ -73,5 +101,7 @@ onUnmounted(() => chart?.dispose())
 </script>
 
 <style scoped>
-.patent-network { width: 100%; height: 100%; min-height: 300px; }
+.patent-network-wrap { width: 100%; height: 100%; }
+.chart-toolbar { padding: 4px 8px; }
+.patent-network { width: 100%; height: calc(100% - 40px); min-height: 280px; }
 </style>
