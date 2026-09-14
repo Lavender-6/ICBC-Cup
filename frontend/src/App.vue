@@ -2,17 +2,52 @@
   <div class="app-container">
     <header class="app-header">
       <div class="header-title">工银科创桥 · 硬科技企业投贷联动平台</div>
-      <nav class="header-nav">
-        <router-link to="/">企业列表</router-link>
-      </nav>
     </header>
-    <main class="app-main">
-      <router-view />
-    </main>
+    <div class="app-body">
+      <aside class="app-sidebar">
+        <el-menu :default-active="activeMenu" @select="handleMenuSelect" class="sidebar-menu">
+          <el-menu-item index="/">
+            <el-icon><List /></el-icon>
+            <span>企业列表</span>
+          </el-menu-item>
+          <template v-if="inEnterpriseDetail">
+            <el-menu-item-group title="企业详情">
+              <el-menu-item index="profile"><span>企业画像</span></el-menu-item>
+              <el-menu-item index="patents"><span>专利分析</span></el-menu-item>
+              <el-menu-item index="team"><span>研发团队</span></el-menu-item>
+              <el-menu-item index="milestone"><span>里程碑看板</span></el-menu-item>
+              <el-menu-item index="credit"><span>授信模拟器</span></el-menu-item>
+              <el-menu-item index="risk"><span>风控预警</span></el-menu-item>
+            </el-menu-item-group>
+          </template>
+        </el-menu>
+      </aside>
+      <main class="app-main">
+        <router-view />
+      </main>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { List } from '@element-plus/icons-vue'
+
+const route = useRoute()
+const router = useRouter()
+
+const inEnterpriseDetail = computed(() => route.name === 'enterprise-detail')
+const activeMenu = computed(() => route.path)
+
+function handleMenuSelect(index: string) {
+  if (index === '/') {
+    router.push('/')
+  } else if (inEnterpriseDetail.value) {
+    const el = document.querySelector(`[data-section="${index}"]`)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 </script>
 
 <style scoped>
@@ -24,7 +59,6 @@
 .app-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 24px;
   height: 56px;
   background: #1a1a2e;
@@ -34,17 +68,19 @@
   font-size: 18px;
   font-weight: 600;
 }
-.header-nav {
+.app-body {
+  flex: 1;
   display: flex;
-  gap: 24px;
+  overflow: hidden;
 }
-.header-nav a {
-  color: #ccc;
-  text-decoration: none;
-  font-size: 14px;
+.app-sidebar {
+  width: 200px;
+  background: #f5f7fa;
+  border-right: 1px solid #e6e8eb;
+  overflow-y: auto;
 }
-.header-nav a.router-link-active {
-  color: #409eff;
+.sidebar-menu {
+  border-right: none;
 }
 .app-main {
   flex: 1;

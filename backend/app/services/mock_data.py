@@ -103,13 +103,13 @@ def seed_mock_data(db: Session):
                 progress = 1.0
                 status = "completed"
                 expected_date = base_date - timedelta(days=(current_stage_idx - idx) * 120)
-                actual_date = expected_date + timedelta(days=random.randint(-10, 30))
+                actual_date = expected_date + timedelta(days=random.randint(5, 25))
             elif idx == current_stage_idx:
                 progress = random.uniform(0.3, 0.8)
                 status = "in_progress"
-                expected_date = base_date + timedelta(days=random.randint(-30, 30))
+                expected_date = base_date + timedelta(days=random.randint(0, 60))
             else:
-                expected_date = base_date + timedelta(days=(idx - current_stage_idx) * 120)
+                expected_date = base_date + timedelta(days=(idx - current_stage_idx) * 120 + 60)
 
             db.add(Milestone(
                 id=str(uuid.uuid4()),

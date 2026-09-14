@@ -2,29 +2,29 @@
   <div class="enterprise-detail" v-loading="loading">
     <el-row :gutter="16">
       <el-col :span="10">
-        <el-card shadow="never">
+        <el-card shadow="never" data-section="profile">
           <template #header>企业画像</template>
           <EnterpriseProfile :enterprise="enterprise" />
         </el-card>
-        <el-card shadow="never" style="margin-top: 12px">
+        <el-card shadow="never" style="margin-top: 12px" data-section="team">
           <template #header>研发团队画像</template>
           <TeamPortrait :enterpriseId="enterpriseId" />
         </el-card>
-        <el-card shadow="never" style="margin-top: 12px">
+        <el-card shadow="never" style="margin-top: 12px" data-section="risk">
           <template #header>风控预警</template>
           <RiskWarning :enterpriseId="enterpriseId" />
         </el-card>
       </el-col>
       <el-col :span="14">
-        <el-card shadow="never">
-          <template #header>专利引用网络</template>
+        <el-card shadow="never" data-section="patents">
+          <template #header>专利引用趋势</template>
           <PatentNetworkGraph :enterpriseId="enterpriseId" />
         </el-card>
-        <el-card shadow="never" style="margin-top: 12px">
+        <el-card shadow="never" style="margin-top: 12px" data-section="milestone">
           <template #header>里程碑看板</template>
           <MilestoneBoard :enterpriseId="enterpriseId" />
         </el-card>
-        <el-card shadow="never" style="margin-top: 12px">
+        <el-card shadow="never" style="margin-top: 12px" data-section="credit">
           <template #header>授信模拟器</template>
           <CreditSimulator :enterpriseId="enterpriseId" />
         </el-card>

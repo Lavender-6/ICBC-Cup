@@ -13,6 +13,7 @@ def build_patent_graph(patents: list[Patent], citations: list[PatentCitation]) -
             ipc=p.ipc_class or "",
             cited_count=p.cited_count or 0,
             quality=p.quality_score or 0.0,
+            filed_at=p.filed_at.isoformat() if p.filed_at else None,
         )
     for c in citations:
         if graph.has_node(c.source_patent_id) and graph.has_node(c.target_patent_id):
@@ -51,6 +52,8 @@ def compute_network_metrics(graph: nx.DiGraph) -> dict:
             "out_degree": out_degree.get(node_id, 0),
             "betweenness": round(betweenness.get(node_id, 0.0), 6),
             "quality": data.get("quality", 0.0),
+            "cited_count": data.get("cited_count", 0),
+            "filed_at": data.get("filed_at"),
         })
 
     edges = [{"source": u, "target": v} for u, v in graph.edges()]
