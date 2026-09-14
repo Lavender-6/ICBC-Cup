@@ -1,11 +1,9 @@
 <template>
   <div class="app-container">
     <header class="app-header">
-      <div class="header-title">频谱智瞳 · 无线信号智能识别平台</div>
+      <div class="header-title">工银科创桥 · 硬科技企业投贷联动平台</div>
       <nav class="header-nav">
-        <router-link to="/">首页</router-link>
-        <router-link to="/datasets">数据集管理</router-link>
-        <router-link to="/history">识别历史</router-link>
+        <router-link to="/">企业列表</router-link>
       </nav>
     </header>
     <main class="app-main">

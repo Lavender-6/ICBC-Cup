@@ -9,14 +9,9 @@ const router = createRouter({
       component: () => import('@/views/Home.vue'),
     },
     {
-      path: '/datasets',
-      name: 'datasets',
-      component: () => import('@/views/DatasetManagement.vue'),
-    },
-    {
-      path: '/history',
-      name: 'history',
-      component: () => import('@/views/RecognitionHistory.vue'),
+      path: '/enterprise/:id',
+      name: 'enterprise-detail',
+      component: () => import('@/views/EnterpriseDetail.vue'),
     },
   ],
 })

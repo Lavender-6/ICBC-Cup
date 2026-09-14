@@ -1,34 +1,25 @@
 # AI 数据目录
 
-## 数据集
+## 数据来源
 
-### RadioML 2018.01a (DeepSig)
-
-- 官方地址: https://www.deepsig.ai/datasets/
-- 格式: HDF5 (.h5)
-- 包含 24 种调制方式，SNR 范围 -20dB ~ +30dB
-- 每种调制方式 × 每个 SNR 有 4096 个样本
+| 数据源 | 用途 |
+|--------|------|
+| 国家知识产权局 | 专利引用网络建模 |
+| 天眼查/企查查 | 企业基本面验证 |
+| CNKI/Web of Science | 研发团队学术产出 |
+| Wind/券商研报 | 行业对标估值 |
 
 ## 目录结构
 
 ```
-data/
-├── raw/            # 原始下载的数据集（.gitignore 忽略）
-├── processed/      # 预处理后的训练数据（.gitignore 忽略）
-└── README.md       # 本文件
+ai/
+├── patent_graph.py      # 专利引用网络建模 (NetworkX)
+├── valuation_model.py   # 企业估值模型
+├── data/                # 数据目录
+└── requirements.txt     # AI 模块依赖
 ```
 
-## 数据预处理
+## 模拟数据
 
-1. 下载 RadioML 2018.01a 数据集
-2. 将 .h5 文件放入 `raw/` 目录
-3. 运行预处理脚本生成频谱图特征：
-
-```bash
-cd ai
-python -c "
-import h5py, numpy as np
-from scipy.signal import spectrogram
-# TODO: 预处理脚本
-"
-```
+后端启动时自动生成 3 家模拟企业（半导体/航天/生物医药），
+包含专利、团队成员、里程碑等完整数据，用于 Demo 演示。
