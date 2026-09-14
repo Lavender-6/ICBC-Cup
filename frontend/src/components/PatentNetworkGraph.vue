@@ -1,12 +1,12 @@
 <template>
   <div class="patent-network-wrap">
+    <div class="patent-network" ref="chartRef"></div>
     <div class="chart-toolbar">
       <el-radio-group v-model="chartType" size="small" @change="renderChart">
         <el-radio-button value="line">折线图</el-radio-button>
         <el-radio-button value="graph">力导向网络</el-radio-button>
       </el-radio-group>
     </div>
-    <div class="patent-network" ref="chartRef"></div>
   </div>
 </template>
 
@@ -101,7 +101,7 @@ onUnmounted(() => chart?.dispose())
 </script>
 
 <style scoped>
-.patent-network-wrap { width: 100%; height: 100%; }
-.chart-toolbar { padding: 4px 8px; }
-.patent-network { width: 100%; height: calc(100% - 40px); min-height: 280px; }
+.patent-network-wrap { width: 100%; height: 100%; display: flex; flex-direction: column; }
+.chart-toolbar { padding: 4px 8px; text-align: center; }
+.patent-network { width: 100%; flex: 1; min-height: 400px; }
 </style>

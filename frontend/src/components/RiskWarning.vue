@@ -82,5 +82,5 @@ onUnmounted(() => chart?.dispose())
 
 <style scoped>
 .risk-warning { padding: 8px; }
-.risk-chart { width: 100%; height: 200px; }
+.risk-chart { width: 100%; height: 300px; }
 </style>
