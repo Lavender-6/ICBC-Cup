@@ -68,3 +68,22 @@ export function getTeam(id: string) {
 export function getPatents(id: string) {
   return request.get<PatentNetwork>(`/enterprises/${id}/patents`)
 }
+
+export interface CreateEnterpriseParams {
+  name: string
+  industry: string
+  stage: string
+  description?: string
+  founded_year?: number
+  employee_count?: number
+  rd_ratio?: number
+  patent_count?: number
+}
+
+export function createEnterprise(data: CreateEnterpriseParams) {
+  return request.post<Enterprise>('/enterprises', data)
+}
+
+export function deleteEnterprise(id: string) {
+  return request.delete(`/enterprises/${id}`)
+}

@@ -13,9 +13,10 @@
             <el-tag :type="statusType(ms.status)" size="small">{{ statusLabel(ms.status) }}</el-tag>
           </div>
           <p style="color: #999; font-size: 12px; margin: 4px 0">{{ ms.description }}</p>
-          <el-progress :percentage="ms.progress * 100" :status="ms.status === 'completed' ? 'success' : ''" />
-          <div style="margin-top: 8px">
+          <el-progress :percentage="Number((ms.progress * 100).toFixed(2))" :status="ms.status === 'completed' ? 'success' : ''" />
+          <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center">
             <el-button size="small" @click="loadTools(ms.id)">查看金融工具</el-button>
+            <el-slider v-if="ms.status !== 'completed'" v-model="ms.progressPercent" :min="0" :max="100" :step="1" style="flex: 1" @change="updateMs(ms)" />
           </div>
           <div v-if="tools[ms.id]" style="margin-top: 8px">
             <el-tag v-for="t in tools[ms.id]" :key="t.id" style="margin: 2px" type="info">
@@ -30,18 +31,32 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { getMilestones, getTools, type Milestone, type FinancialTool } from '@/api/milestone'
+import { ElMessage } from 'element-plus'
+import { getMilestones, getTools, updateProgress, type Milestone, type FinancialTool } from '@/api/milestone'
 
 const props = defineProps<{ enterpriseId: string }>()
 const milestones = ref<Milestone[]>([])
 const tools = ref<Record<string, FinancialTool[]>>({})
 
 async function loadData() {
-  try { milestones.value = await getMilestones(props.enterpriseId) as any } catch {}
+  try {
+    const res = await getMilestones(props.enterpriseId) as any
+    milestones.value = res.map((ms: any) => ({ ...ms, progressPercent: Number((ms.progress * 100).toFixed(2)) }))
+  } catch {}
 }
 
 async function loadTools(msId: string) {
   try { tools.value[msId] = await getTools(msId) as any } catch {}
+}
+
+async function updateMs(ms: any) {
+  try {
+    await updateProgress(ms.id, ms.progressPercent / 100)
+    ElMessage.success(`进度已更新: ${ms.progressPercent}%`)
+    await loadData()
+  } catch {
+    ElMessage.error('更新失败')
+  }
 }
 
 function statusType(status: string): string {
@@ -53,8 +68,8 @@ function statusLabel(status: string): string {
 }
 
 function formatMoney(val: number): string {
-  if (val >= 10000) return (val / 10000).toFixed(1) + '万'
-  return val.toFixed(0)
+  if (val >= 10000) return (val / 10000).toFixed(2) + '万'
+  return val.toFixed(2)
 }
 
 watch(() => props.enterpriseId, loadData, { immediate: true })

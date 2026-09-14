@@ -11,6 +11,7 @@ class EnterpriseBase(BaseModel):
     founded_year: Optional[int] = None
     employee_count: Optional[int] = None
     rd_ratio: Optional[float] = 0.0
+    patent_count: Optional[int] = 10
 
 
 class EnterpriseResponse(EnterpriseBase):

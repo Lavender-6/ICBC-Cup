@@ -90,15 +90,26 @@ def seed_mock_data(db: Session):
                 experience_years=random.randint(3, 20),
             ))
 
+        base_date = datetime(2026, 10, 1)
+        current_stage_idx = MILESTONE_STAGES.index(ep_data["stage"])
+
         for idx, stage in enumerate(MILESTONE_STAGES):
             progress = 0.0
             status = "pending"
-            if idx < MILESTONE_STAGES.index(ep_data["stage"]):
+            expected_date = None
+            actual_date = None
+
+            if idx < current_stage_idx:
                 progress = 1.0
                 status = "completed"
-            elif idx == MILESTONE_STAGES.index(ep_data["stage"]):
+                expected_date = base_date - timedelta(days=(current_stage_idx - idx) * 120)
+                actual_date = expected_date + timedelta(days=random.randint(-10, 30))
+            elif idx == current_stage_idx:
                 progress = random.uniform(0.3, 0.8)
                 status = "in_progress"
+                expected_date = base_date + timedelta(days=random.randint(-30, 30))
+            else:
+                expected_date = base_date + timedelta(days=(idx - current_stage_idx) * 120)
 
             db.add(Milestone(
                 id=str(uuid.uuid4()),
@@ -106,9 +117,9 @@ def seed_mock_data(db: Session):
                 name=f"{stage}阶段里程碑",
                 stage=stage,
                 description=f"{ep_data['name']}的{stage}阶段关键节点",
-                expected_date=datetime.now() + timedelta(days=random.randint(-60, 180)),
-                actual_date=datetime.now() - timedelta(days=random.randint(0, 90)) if status == "completed" else None,
-                progress=progress,
+                expected_date=expected_date,
+                actual_date=actual_date,
+                progress=round(progress, 4),
                 status=status,
                 is_verified=status == "completed",
             ))

@@ -20,9 +20,9 @@
       <el-table-column prop="citation_count" label="引用" width="60" />
       <el-table-column prop="h_index" label="H指数" width="60" />
       <el-table-column prop="patent_count" label="专利" width="60" />
-      <el-table-column label="画像评分" width="100">
+      <el-table-column label="画像评分" width="120">
         <template #default="{ row }">
-          <el-progress :percentage="row.portrait_score * 100" :stroke-width="10" />
+          <el-progress :percentage="Number((row.portrait_score * 100).toFixed(2))" :stroke-width="10" />
         </template>
       </el-table-column>
     </el-table>
