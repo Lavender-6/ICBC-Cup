@@ -40,9 +40,9 @@ function renderChart(trend: RiskTrendPoint[]) {
       const idx = p[0].dataIndex
       return `${trend[idx].milestone}<br/>日期: ${p[0].name}<br/>风险: ${p[0].value}%<br/>进度: ${p[1]?.value || 0}%`
     }},
-    legend: { data: ['风险评分(%)', '里程碑进度(%)'], bottom: 0 },
-    grid: { left: '10%', right: '10%', bottom: '15%', top: '15%' },
-    xAxis: { type: 'category', name: '时间', data: dates, axisLabel: { rotate: 30, fontSize: 10 } },
+    legend: { data: ['风险评分(%)', '里程碑进度(%)'], bottom: 5 },
+    grid: { left: '10%', right: '10%', bottom: '25%', top: '15%' },
+    xAxis: { type: 'category', name: '时间', data: dates, axisLabel: { rotate: 30, fontSize: 10, interval: 0 } },
     yAxis: { type: 'value', name: '(%)', max: 100 },
     series: [
       { name: '风险评分(%)', type: 'line', data: risks, smooth: true, itemStyle: { color: '#f56c6c' }, areaStyle: { opacity: 0.1 } },

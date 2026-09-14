@@ -12,7 +12,8 @@ router = APIRouter()
 
 @router.get("/{enterprise_id}", response_model=list[MilestoneResponse])
 async def list_milestones(enterprise_id: str, db: Session = Depends(get_db)):
-    return db.query(Milestone).filter(Milestone.enterprise_id == enterprise_id).order_by(Milestone.expected_date).all()
+    milestones = db.query(Milestone).filter(Milestone.enterprise_id == enterprise_id).all()
+    return sorted(milestones, key=lambda m: MILESTONE_STAGES.index(m.stage) if m.stage in MILESTONE_STAGES else 999)
 
 
 @router.post("/{enterprise_id}", response_model=MilestoneResponse)

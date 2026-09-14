@@ -16,12 +16,12 @@
     <el-row :gutter="12" v-if="valuation">
       <el-col :span="8">
         <el-card shadow="hover">
-          <el-statistic title="基础估值" :value="valuation.base_valuation" :precision="0" />
+          <el-statistic title="基础估值" :value="valuation.base_valuation" :precision="0" suffix="万元" />
         </el-card>
       </el-col>
       <el-col :span="8">
         <el-card shadow="hover">
-          <el-statistic title="当前估值" :value="valuation.current_valuation" :precision="0" />
+          <el-statistic title="当前估值" :value="valuation.current_valuation" :precision="0" suffix="万元" />
         </el-card>
       </el-col>
       <el-col :span="8">

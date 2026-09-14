@@ -16,7 +16,7 @@
           <el-progress :percentage="Number((ms.progress * 100).toFixed(2))" :status="ms.status === 'completed' ? 'success' : ''" />
           <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center">
             <el-button size="small" @click="loadTools(ms.id)">查看金融工具</el-button>
-            <el-slider v-if="ms.status !== 'completed'" v-model="ms.progressPercent" :min="0" :max="100" :step="1" style="flex: 1" @change="updateMs(ms)" />
+            <el-slider v-model="ms.progressPercent" :min="0" :max="100" :step="1" style="flex: 1" @change="updateMs(ms)" />
           </div>
           <div v-if="tools[ms.id]" style="margin-top: 8px">
             <el-tag v-for="t in tools[ms.id]" :key="t.id" style="margin: 2px" type="info">
@@ -41,7 +41,12 @@ const tools = ref<Record<string, FinancialTool[]>>({})
 async function loadData() {
   try {
     const res = await getMilestones(props.enterpriseId) as any
-    milestones.value = res.map((ms: any) => ({ ...ms, progressPercent: Number((ms.progress * 100).toFixed(2)) }))
+    const stageOrder = ['立项预研', '原型验证', '流片成功', '商业化量产', '上市预备']
+    const sorted = [...res].sort((a: any, b: any) => {
+      const ia = stageOrder.indexOf(a.stage); const ib = stageOrder.indexOf(b.stage)
+      return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib)
+    })
+    milestones.value = sorted.map((ms: any) => ({ ...ms, progressPercent: Number((ms.progress * 100).toFixed(2)) }))
   } catch {}
 }
 
