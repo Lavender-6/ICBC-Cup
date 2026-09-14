@@ -12,6 +12,11 @@
           <el-tag :type="riskType(row.risk_score)">{{ (row.risk_score * 100).toFixed(1) }}%</el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="操作" width="80" fixed="right">
+        <template #default="{ row }">
+          <el-button type="danger" size="small" link @click.stop="handleDelete(row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -19,7 +24,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getEnterprises, type Enterprise } from '@/api/enterprise'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getEnterprises, deleteEnterprise, type Enterprise } from '@/api/enterprise'
 
 const router = useRouter()
 const enterprises = ref<Enterprise[]>([])
@@ -37,6 +43,15 @@ async function loadData() {
 
 function handleClick(row: Enterprise) {
   router.push(`/enterprise/${row.id}`)
+}
+
+async function handleDelete(row: Enterprise) {
+  try {
+    await ElMessageBox.confirm(`确认删除企业「${row.name}」？`, '提示', { type: 'warning' })
+    await deleteEnterprise(row.id)
+    ElMessage.success('删除成功')
+    loadData()
+  } catch {}
 }
 
 function formatMoney(val: number): string {
