@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy.orm import Session
 from app.models.enterprise import Enterprise
 from app.models.milestone import Milestone
-from app.models.credit import CreditRecord, RiskAlert
+from app.models.credit import CreditRecord
 from app.services.valuation import estimate_valuation
 
 
@@ -62,18 +62,8 @@ def generate_risk_alerts(db: Session, enterprise_id: str) -> list[dict]:
 
     for ms in milestones:
         ms_alerts = check_milestone_alerts(ms)
-        for a in ms_alerts:
-            alert = RiskAlert(
-                id=str(uuid.uuid4()),
-                enterprise_id=enterprise_id,
-                alert_type=a["type"],
-                severity=a["severity"],
-                message=a["message"],
-            )
-            db.add(alert)
-            alerts.append(a)
+        alerts.extend(ms_alerts)
 
-    db.commit()
     return alerts
 
 

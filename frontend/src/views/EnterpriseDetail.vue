@@ -58,5 +58,9 @@ onMounted(loadData)
 </script>
 
 <style scoped>
-.enterprise-detail { padding: 12px; }
+.enterprise-detail {
+  padding: 16px;
+  min-height: 100%;
+  background: linear-gradient(180deg, #0A1730 0%, #0E2145 100%);
+}
 </style>

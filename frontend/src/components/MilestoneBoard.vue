@@ -12,7 +12,7 @@
             <strong>{{ ms.name }}</strong>
             <el-tag :type="statusType(ms.status)" size="small">{{ statusLabel(ms.status) }}</el-tag>
           </div>
-          <p style="color: #999; font-size: 12px; margin: 4px 0">{{ ms.description }}</p>
+          <p style="color: #9FB4DA; font-size: 12px; margin: 4px 0">{{ ms.description }}</p>
           <el-progress :percentage="Number((ms.progress * 100).toFixed(2))" :status="ms.status === 'completed' ? 'success' : ''" />
           <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center">
             <el-button size="small" @click="loadTools(ms.id)">查看金融工具</el-button>

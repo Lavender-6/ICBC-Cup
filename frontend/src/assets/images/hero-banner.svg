@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1730"/>
+      <stop offset="0.55" stop-color="#0E2145"/>
+      <stop offset="1" stop-color="#143061"/>
+    </linearGradient>
+    <radialGradient id="redGlow" cx="0.12" cy="0.1" r="0.6">
+      <stop offset="0" stop-color="#C7000B" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#C7000B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="goldGlow" cx="0.9" cy="0.15" r="0.55">
+      <stop offset="0" stop-color="#E8B34B" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#E8B34B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bridge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E8B34B"/>
+      <stop offset="0.5" stop-color="#F5D488"/>
+      <stop offset="1" stop-color="#E8B34B"/>
+    </linearGradient>
+    <linearGradient id="deck" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C7000B"/>
+      <stop offset="1" stop-color="#FF5A4E"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <!-- background -->
+  <rect width="1600" height="640" fill="url(#bg)"/>
+  <rect width="1600" height="640" fill="url(#redGlow)"/>
+  <rect width="1600" height="640" fill="url(#goldGlow)"/>
+
+  <!-- faint grid -->
+  <g stroke="#3D5B94" stroke-opacity="0.14" stroke-width="1">
+    <path d="M0 128H1600M0 256H1600M0 384H1600M0 512H1600"/>
+    <path d="M200 0V640M400 0V640M600 0V640M800 0V640M1000 0V640M1200 0V640M1400 0V640"/>
+  </g>
+
+  <!-- faint tech motifs -->
+  <g stroke="#5B7DBB" stroke-opacity="0.22" fill="none" stroke-width="2">
+    <rect x="1210" y="70" width="150" height="110" rx="10"/>
+    <rect x="1232" y="92" width="106" height="66" rx="6"/>
+    <path d="M1235 60v18M1272 60v18M1309 60v18M1346 60v18M1235 172v18M1272 172v18M1309 172v18M1346 172v18M1188 105h22M1188 145h22M1360 105h22M1360 145h22"/>
+    <circle cx="1120" cy="130" r="46"/>
+    <path d="M1074 130h-40M1120 84v-30M1166 130h40"/>
+  </g>
+
+  <!-- headline -->
+  <g>
+    <rect x="84" y="96" width="8" height="150" rx="4" fill="#C7000B"/>
+    <text x="118" y="170" font-size="92" font-weight="bold" fill="#FFFFFF">工银科创桥</text>
+    <text x="120" y="234" font-size="32" fill="#F5D488" letter-spacing="6">硬科技企业里程碑式投贷联动平台</text>
+    <text x="120" y="290" font-size="19" fill="#9FB4DA" letter-spacing="2">AI 评估引擎 · 里程碑触发动态授信 · 投贷联动工作台 · 风控看板</text>
+  </g>
+
+  <!-- badge top right -->
+  <g>
+    <rect x="1240" y="236" width="284" height="52" rx="26" fill="#FFFFFF" fill-opacity="0.08" stroke="#E8B34B" stroke-opacity="0.7"/>
+    <text x="1382" y="270" font-size="22" fill="#F5D488" text-anchor="middle" letter-spacing="3">股 · 债 · 保 三维工具包</text>
+  </g>
+
+  <!-- bridge arc -->
+  <path d="M140 520 Q 800 260 1460 520" fill="none" stroke="url(#bridge)" stroke-width="7" stroke-linecap="round"/>
+  <!-- deck -->
+  <path d="M90 570 H1510" stroke="url(#deck)" stroke-width="5" stroke-linecap="round"/>
+  <!-- pillars -->
+  <path d="M140 520 V600 M1460 520 V600" stroke="#7E97C6" stroke-width="8" stroke-linecap="round"/>
+  <!-- hangers -->
+  <g stroke="#7E97C6" stroke-opacity="0.65" stroke-width="2.5">
+    <path d="M272 473 V570 M536 411 V570 M800 390 V570 M1064 411 V570 M1328 473 V570"/>
+  </g>
+
+  <!-- milestone nodes -->
+  <g>
+    <!-- node 1 -->
+    <circle cx="272" cy="473" r="16" fill="#C7000B" opacity="0.35" filter="url(#soft)"/>
+    <circle cx="272" cy="473" r="9" fill="#C7000B" stroke="#FFFFFF" stroke-width="2.5"/>
+    <text x="272" y="610" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">① 立项 / 预研</text>
+    <text x="272" y="632" font-size="15" fill="#F5D488" text-anchor="middle">知产质押贷</text>
+    <!-- node 2 -->
+    <circle cx="536" cy="411" r="16" fill="#C7000B" opacity="0.35" filter="url(#soft)"/>
+    <circle cx="536" cy="411" r="9" fill="#C7000B" stroke="#FFFFFF" stroke-width="2.5"/>
+    <text x="536" y="610" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">② 原型验证</text>
+    <text x="536" y="632" font-size="15" fill="#F5D488" text-anchor="middle">AI 估值 + 股权跟投</text>
+    <!-- node 3 -->
+    <circle cx="800" cy="390" r="18" fill="#FF5A4E" opacity="0.4" filter="url(#soft)"/>
+    <circle cx="800" cy="390" r="10" fill="#FF5A4E" stroke="#FFFFFF" stroke-width="2.5"/>
+    <text x="800" y="345" font-size="18" fill="#F5D488" text-anchor="middle" letter-spacing="2">投贷联动</text>
+    <text x="800" y="610" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">③ 流片 / 临床 II 期</text>
+    <text x="800" y="632" font-size="15" fill="#F5D488" text-anchor="middle">银行授信 + VC 跟投</text>
+    <!-- node 4 -->
+    <circle cx="1064" cy="411" r="16" fill="#C7000B" opacity="0.35" filter="url(#soft)"/>
+    <circle cx="1064" cy="411" r="9" fill="#C7000B" stroke="#FFFFFF" stroke-width="2.5"/>
+    <text x="1064" y="610" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">④ 商业化量产</text>
+    <text x="1064" y="632" font-size="15" fill="#F5D488" text-anchor="middle">供应链票据 + 订单融资</text>
+    <!-- node 5 -->
+    <circle cx="1328" cy="473" r="16" fill="#C7000B" opacity="0.35" filter="url(#soft)"/>
+    <circle cx="1328" cy="473" r="9" fill="#C7000B" stroke="#FFFFFF" stroke-width="2.5"/>
+    <text x="1328" y="610" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">⑤ 上市预备</text>
+    <text x="1328" y="632" font-size="15" fill="#F5D488" text-anchor="middle">可转债 + 科创专项债</text>
+  </g>
+
+  <!-- endpoint icons: bank left, chip right -->
+  <g fill="none" stroke="#F5D488" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M108 470 h64 M112 470 l28 -22 l28 22 M118 470 v34 M132 470 v34 M148 470 v34 M162 470 v34 M110 504 h60"/>
+  </g>
+  <g fill="none" stroke="#F5D488" stroke-width="3" stroke-linejoin="round">
+    <rect x="1428" y="448" width="64" height="56" rx="8"/>
+    <rect x="1444" y="462" width="32" height="28" rx="4"/>
+    <path d="M1440 440 v8 M1456 440 v8 M1472 440 v8 M1488 440 v8 M1440 504 v8 M1456 504 v8 M1472 504 v8 M1488 504 v8 M1420 462 h8 M1420 478 h8 M1420 494 h8 M1500 462 h8 M1500 478 h8 M1500 494 h8"/>
+  </g>
+</svg>

@@ -61,12 +61,25 @@ function handleMenuSelect(index: string) {
   align-items: center;
   padding: 0 24px;
   height: 56px;
-  background: #1a1a2e;
+  background: linear-gradient(90deg, #0A1730, #0E2145);
   color: #fff;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, #C7000B, #E8B34B) 1;
 }
 .header-title {
   font-size: 18px;
   font-weight: 600;
+  letter-spacing: 2px;
+}
+.header-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: #C7000B;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 2px;
 }
 .app-body {
   flex: 1;
@@ -75,9 +88,10 @@ function handleMenuSelect(index: string) {
 }
 .app-sidebar {
   width: 200px;
-  background: #f5f7fa;
-  border-right: 1px solid #e6e8eb;
+  background: rgba(10, 23, 48, 0.8);
+  border-right: 1px solid rgba(91, 125, 187, 0.15);
   overflow-y: auto;
+  backdrop-filter: blur(8px);
 }
 .sidebar-menu {
   border-right: none;
@@ -85,5 +99,6 @@ function handleMenuSelect(index: string) {
 .app-main {
   flex: 1;
   overflow-y: auto;
+  background: #0A1730;
 }
 </style>

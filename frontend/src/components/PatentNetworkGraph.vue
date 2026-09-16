@@ -31,18 +31,18 @@ function renderLineChart() {
   const qualities = sorted.map((n: any) => Number((n.quality * 100).toFixed(2)))
 
   chart.setOption({
-    title: { text: '专利引用趋势', left: 'center', textStyle: { fontSize: 14 } },
+    title: { text: '专利引用趋势', left: 'center', textStyle: { fontSize: 14, color: '#F5D488' } },
     tooltip: { trigger: 'axis' },
-    legend: { data: ['引用次数', '质量评分(%)'], bottom: 0 },
+    legend: { data: ['引用次数', '质量评分(%)'], bottom: 0, textStyle: { color: '#9FB4DA' } },
     grid: { left: '8%', right: '8%', bottom: '15%', top: '15%' },
-    xAxis: { type: 'category', name: '时间', data: dates, axisLabel: { rotate: 30, fontSize: 10 } },
+    xAxis: { type: 'category', name: '时间', data: dates, axisLabel: { rotate: 30, fontSize: 10, color: '#9FB4DA' }, nameTextStyle: { color: '#9FB4DA' } },
     yAxis: [
-      { type: 'value', name: '引用次数', position: 'left' },
-      { type: 'value', name: '质量(%)', position: 'right', max: 100 },
+      { type: 'value', name: '引用次数', position: 'left', axisLabel: { color: '#9FB4DA' }, nameTextStyle: { color: '#9FB4DA' }, splitLine: { lineStyle: { color: 'rgba(91,125,187,0.15)' } } },
+      { type: 'value', name: '质量(%)', position: 'right', max: 100, axisLabel: { color: '#9FB4DA' }, nameTextStyle: { color: '#9FB4DA' }, splitLine: { show: false } },
     ],
     series: [
       { name: '引用次数', type: 'line', data: citedCounts, smooth: true, itemStyle: { color: '#409eff' }, areaStyle: { opacity: 0.1 } },
-      { name: '质量评分(%)', type: 'line', yAxisIndex: 1, data: qualities, smooth: true, itemStyle: { color: '#67c23a' } },
+      { name: '质量评分(%)', type: 'line', yAxisIndex: 1, data: qualities, smooth: true, itemStyle: { color: '#E8B34B' } },
     ],
   }, true)
 }
@@ -58,13 +58,13 @@ function renderGraphChart() {
   }))
   const links = networkData.edges.map((e: any) => ({ source: e.source, target: e.target }))
   chart.setOption({
-    title: { text: '专利引用网络', left: 'center', textStyle: { fontSize: 14 } },
+    title: { text: '专利引用网络', left: 'center', textStyle: { fontSize: 14, color: '#F5D488' } },
     tooltip: { formatter: (p: any) => p.dataType === 'node' ? `${p.data.name}\n${p.data.value}` : '' },
     series: [{
       type: 'graph', layout: 'force', roam: true, draggable: true,
       force: { repulsion: 100, edgeLength: 50, gravity: 0.1 },
-      label: { show: true, fontSize: 8 },
-      lineStyle: { color: '#aaa', curveness: 0.1 },
+      label: { show: true, fontSize: 8, color: '#E0E6F0' },
+      lineStyle: { color: 'rgba(91,125,187,0.4)', curveness: 0.1 },
       data: nodes, links,
     }],
   }, true)
