@@ -1,11 +1,21 @@
 import uuid
 import random
+import os
+import sys
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from app.models.enterprise import Enterprise
 from app.models.patent import Patent, PatentCitation
 from app.models.team import TeamMember
 from app.models.milestone import Milestone, MILESTONE_STAGES
+
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+try:
+    from ai.inference.model_loader import generate_financial_metrics
+except Exception:
+    generate_financial_metrics = None
 
 INDUSTRIES = ["半导体", "航天", "生物医药", "高端装备", "新材料", "人工智能"]
 
@@ -47,6 +57,8 @@ def seed_mock_data(db: Session):
     for ep_data in SAMPLE_ENTERPRISES:
         eid = str(uuid.uuid4())
         enterprise = Enterprise(id=eid, **ep_data)
+        if generate_financial_metrics:
+            enterprise.financial_metrics = generate_financial_metrics(ep_data["industry"], ep_data["stage"])
         db.add(enterprise)
 
         patent_count = random.randint(8, 20)

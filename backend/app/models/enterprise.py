@@ -17,5 +17,6 @@ class Enterprise(Base):
     base_valuation = Column(Float, default=0.0)
     current_valuation = Column(Float, default=0.0)
     risk_score = Column(Float, default=0.5)
+    financial_metrics = Column(Text)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())

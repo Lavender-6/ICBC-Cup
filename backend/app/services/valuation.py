@@ -1,3 +1,5 @@
+import os
+import sys
 import numpy as np
 from sqlalchemy.orm import Session
 from app.models.enterprise import Enterprise
@@ -5,6 +7,22 @@ from app.models.patent import Patent
 from app.models.team import TeamMember
 from app.services.patent_network import get_enterprise_patent_network
 from app.services.team_portrait import get_team_portrait
+
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+
+try:
+    from ai.inference.model_loader import predict_valuation, is_model_available, predict_bankruptcy_risk, is_bankruptcy_model_available
+    _ML_AVAILABLE = is_model_available()
+    _BK_AVAILABLE = is_bankruptcy_model_available()
+except Exception:
+    predict_valuation = None
+    is_model_available = None
+    predict_bankruptcy_risk = None
+    is_bankruptcy_model_available = None
+    _ML_AVAILABLE = False
+    _BK_AVAILABLE = False
 
 
 INDUSTRY_MULTIPLIERS = {
@@ -44,16 +62,45 @@ def estimate_valuation(db: Session, enterprise_id: str) -> dict:
     team_score = team_portrait.get("team_score", 0)
     rd_ratio = enterprise.rd_ratio or 0.0
 
-    patent_valuation = patent_count * avg_patent_quality * 500 * industry_mult
-    team_valuation = team_score * len(members) * 300 * industry_mult
-    rd_valuation = rd_ratio * enterprise.employee_count * 100
+    ml_result = None
+    if _ML_AVAILABLE and predict_valuation is not None:
+        ml_result = predict_valuation({
+            "industry": enterprise.industry,
+            "stage": enterprise.stage,
+            "patent_count": patent_count,
+            "avg_patent_quality": float(avg_patent_quality),
+            "team_score": float(team_score),
+            "rd_ratio": float(rd_ratio),
+            "employee_count": enterprise.employee_count or 0,
+            "founded_year": enterprise.founded_year or 2020,
+        })
 
-    base_valuation = patent_valuation + team_valuation + rd_valuation
-    current_valuation = base_valuation * stage_mult
+    if ml_result is not None:
+        base_valuation = ml_result["base_valuation"]
+        current_valuation = ml_result["current_valuation"]
+        risk_score = ml_result["risk_score"]
+        valuation_source = "ml_model"
+    else:
+        patent_valuation = patent_count * avg_patent_quality * 500 * industry_mult
+        team_valuation = team_score * len(members) * 300 * industry_mult
+        rd_valuation = rd_ratio * enterprise.employee_count * 100
 
-    risk_score = compute_risk_score(
-        avg_patent_quality, team_score, patent_count, enterprise.rd_ratio or 0
-    )
+        base_valuation = patent_valuation + team_valuation + rd_valuation
+        current_valuation = base_valuation * stage_mult
+        risk_score = compute_risk_score(
+            avg_patent_quality, team_score, patent_count, enterprise.rd_ratio or 0
+        )
+        valuation_source = "rule_fallback"
+
+    if _BK_AVAILABLE and predict_bankruptcy_risk is not None and enterprise.financial_metrics:
+        bk_risk = predict_bankruptcy_risk(enterprise.financial_metrics)
+        if bk_risk is not None:
+            risk_score = bk_risk
+            risk_source = "bankruptcy_model"
+        else:
+            risk_source = valuation_source
+    else:
+        risk_source = valuation_source
 
     enterprise.base_valuation = round(base_valuation, 2)
     enterprise.current_valuation = round(current_valuation, 2)
@@ -69,10 +116,12 @@ def estimate_valuation(db: Session, enterprise_id: str) -> dict:
         "team_score": round(team_score, 4),
         "industry_multiplier": industry_mult,
         "stage_multiplier": stage_mult,
+        "valuation_source": valuation_source,
+        "risk_source": risk_source,
         "components": {
-            "patent_valuation": round(patent_valuation, 2),
-            "team_valuation": round(team_valuation, 2),
-            "rd_valuation": round(rd_valuation, 2),
+            "patent_valuation": round(patent_count * avg_patent_quality * 500 * industry_mult, 2) if ml_result is None else None,
+            "team_valuation": round(team_score * len(members) * 300 * industry_mult, 2) if ml_result is None else None,
+            "rd_valuation": round(rd_ratio * enterprise.employee_count * 100, 2) if ml_result is None else None,
         },
     }
 

@@ -34,7 +34,9 @@ class ValuationResponse(BaseModel):
     team_score: float
     industry_multiplier: float
     stage_multiplier: float
-    components: dict
+    components: Optional[dict] = None
+    valuation_source: Optional[str] = None
+    risk_source: Optional[str] = None
 
 
 class TeamPortraitResponse(BaseModel):

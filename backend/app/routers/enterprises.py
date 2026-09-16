@@ -1,5 +1,7 @@
 import uuid
 import random
+import os
+import sys
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -18,6 +20,14 @@ from app.schemas.enterprise import (
 from app.services.valuation import estimate_valuation
 from app.services.team_portrait import get_team_portrait
 from app.services.patent_network import get_enterprise_patent_network
+
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+try:
+    from ai.inference.model_loader import generate_financial_metrics
+except Exception:
+    generate_financial_metrics = None
 
 router = APIRouter()
 
@@ -87,6 +97,8 @@ async def create_enterprise(data: EnterpriseBase, db: Session = Depends(get_db))
     patent_count = data.patent_count or 10
     create_data = {k: v for k, v in data.model_dump().items() if k != "patent_count"}
     enterprise = Enterprise(id=str(uuid.uuid4()), **create_data)
+    if generate_financial_metrics:
+        enterprise.financial_metrics = generate_financial_metrics(data.industry, data.stage)
     db.add(enterprise)
     db.flush()
     _generate_enterprise_data(db, enterprise, patent_count)

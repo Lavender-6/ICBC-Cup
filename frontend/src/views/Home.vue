@@ -7,10 +7,10 @@
       <div class="hero-content">
         <img src="@/assets/images/hero-banner.svg" alt="工银科创桥" class="hero-svg" />
         <div class="hero-cta">
-          <el-button type="primary" size="large" round @click="scrollTo('enterprise-section')">
+          <el-button type="primary" round @click="scrollTo('enterprise-section')">
             开始评估
           </el-button>
-          <el-button size="large" round class="cta-secondary" @click="scrollTo('capability-section')">
+          <el-button round class="cta-secondary" @click="scrollTo('capability-section')">
             了解平台
           </el-button>
         </div>
@@ -219,51 +219,50 @@ async function handleSubmit() {
 /* ===== Hero ===== */
 .hero {
   position: relative;
-  min-height: 520px;
+  min-height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #0A1730 0%, #0E2145 55%, #143061 100%);
+  background: linear-gradient(135deg, #0A1730 0%, #0E2145 50%, #143061 100%);
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
   background: url('../assets/images/hero-bg.png') center / cover no-repeat;
-  opacity: 0.22;
-  filter: saturate(1.2);
+  opacity: 0.08;
+  filter: saturate(0.8) blur(2px);
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 12% 10%, rgba(199, 0, 11, 0.18) 0%, transparent 60%),
-              radial-gradient(ellipse at 90% 15%, rgba(232, 179, 75, 0.15) 0%, transparent 55%),
-              linear-gradient(180deg, transparent 70%, #0A1730 100%);
+  background: linear-gradient(180deg, transparent 80%, #0A1730 100%);
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 1200px;
   text-align: center;
-  padding: 24px;
+  padding: 0;
 }
 
 .hero-svg {
   width: 100%;
-  max-width: 1100px;
   height: auto;
-  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.4));
+  display: block;
 }
 
 .hero-cta {
-  margin-top: 20px;
+  margin-top: 16px;
+  padding-bottom: 28px;
   display: flex;
-  gap: 16px;
+  gap: 12px;
   justify-content: center;
+  position: relative;
+  z-index: 3;
 }
 
 .cta-secondary {

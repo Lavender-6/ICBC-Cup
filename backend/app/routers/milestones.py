@@ -46,6 +46,12 @@ async def update_progress(milestone_id: str, progress: float, db: Session = Depe
     if milestone.progress >= 1.0:
         milestone.status = "completed"
         milestone.is_verified = True
+    elif milestone.progress > 0.0:
+        milestone.status = "in_progress"
+        milestone.is_verified = False
+    else:
+        milestone.status = "pending"
+        milestone.is_verified = False
     db.commit()
     db.refresh(milestone)
     return milestone
