@@ -10,6 +10,10 @@
             <el-icon><List /></el-icon>
             <span>企业列表</span>
           </el-menu-item>
+          <el-menu-item index="/dashboard">
+            <el-icon><DataAnalysis /></el-icon>
+            <span>数据大屏</span>
+          </el-menu-item>
           <template v-if="inEnterpriseDetail">
             <el-menu-item-group title="企业详情">
               <el-menu-item index="profile"><span>企业画像</span></el-menu-item>
@@ -32,7 +36,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { List } from '@element-plus/icons-vue'
+import { List, DataAnalysis } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -41,8 +45,8 @@ const inEnterpriseDetail = computed(() => route.name === 'enterprise-detail')
 const activeMenu = computed(() => route.path)
 
 function handleMenuSelect(index: string) {
-  if (index === '/') {
-    router.push('/')
+  if (index === '/' || index === '/dashboard') {
+    router.push(index)
   } else if (inEnterpriseDetail.value) {
     const el = document.querySelector(`[data-section="${index}"]`)
     if (el) el.scrollIntoView({ behavior: 'smooth' })
@@ -100,5 +104,13 @@ function handleMenuSelect(index: string) {
   flex: 1;
   overflow-y: auto;
   background: #0A1730;
+}
+
+@media (max-width: 768px) {
+  .app-header { padding: 0 12px; }
+  .header-title { font-size: 14px; letter-spacing: 1px; }
+  .app-sidebar { width: 64px; }
+  .app-sidebar .el-menu-item span { display: none; }
+  .app-sidebar .el-menu-item-group__title { display: none; }
 }
 </style>

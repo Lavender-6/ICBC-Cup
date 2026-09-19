@@ -57,6 +57,17 @@ async def update_progress(milestone_id: str, progress: float, db: Session = Depe
     return milestone
 
 
+@router.delete("/{milestone_id}")
+async def delete_milestone(milestone_id: str, db: Session = Depends(get_db)):
+    milestone = db.query(Milestone).filter(Milestone.id == milestone_id).first()
+    if not milestone:
+        raise HTTPException(status_code=404, detail="Milestone not found")
+    db.query(FinancialTool).filter(FinancialTool.milestone_id == milestone_id).delete()
+    db.delete(milestone)
+    db.commit()
+    return {"message": "Deleted"}
+
+
 @router.get("/{milestone_id}/tools", response_model=list[FinancialToolResponse])
 async def get_tools(milestone_id: str, db: Session = Depends(get_db)):
     milestone = db.query(Milestone).filter(Milestone.id == milestone_id).first()

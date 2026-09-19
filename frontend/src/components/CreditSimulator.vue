@@ -36,24 +36,64 @@
       title="授信公式"
       description="最终额度 = 基础额度 × 里程碑进度系数 × 风险评估系数"
     />
+
+    <div v-if="history.length" style="margin-top: 16px">
+      <el-divider>授信模拟历史</el-divider>
+      <el-table :data="history.slice(0, 5)" size="small" stripe>
+        <el-table-column label="时间" width="170">
+          <template #default="{ row }">{{ formatTime(row.created_at) }}</template>
+        </el-table-column>
+        <el-table-column label="基础额度" width="120">
+          <template #default="{ row }">{{ row.base_amount.toFixed(0) }}</template>
+        </el-table-column>
+        <el-table-column label="进度系数" width="100">
+          <template #default="{ row }">{{ row.progress_factor.toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column label="风险系数" width="100">
+          <template #default="{ row }">{{ row.risk_factor.toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column label="最终授信" width="120">
+          <template #default="{ row }">
+            <span style="color: #F5D488; font-weight: 600">{{ row.final_amount.toFixed(0) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="80">
+          <template #default="{ row }">
+            <el-tag size="small">{{ row.status }}</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { simulateCredit, type CreditResult } from '@/api/credit'
+import { simulateCredit, getCreditHistory, type CreditResult } from '@/api/credit'
 
 const props = defineProps<{ enterpriseId: string }>()
 const progressPercent = ref(50)
 const progress = ref(0.5)
 const result = ref<CreditResult | null>(null)
+const history = ref<any[]>([])
 
 async function simulate() {
   progress.value = progressPercent.value / 100
-  try { result.value = await simulateCredit(props.enterpriseId, progress.value) as any } catch {}
+  try {
+    result.value = await simulateCredit(props.enterpriseId, progress.value) as any
+    await loadHistory()
+  } catch {}
 }
 
-watch(() => props.enterpriseId, simulate, { immediate: true })
+async function loadHistory() {
+  try { history.value = await getCreditHistory(props.enterpriseId) as any } catch {}
+}
+
+function formatTime(iso: string): string {
+  return iso?.replace('T', ' ').slice(0, 19) || ''
+}
+
+watch(() => props.enterpriseId, () => { simulate(); loadHistory() }, { immediate: true })
 </script>
 
 <style scoped>

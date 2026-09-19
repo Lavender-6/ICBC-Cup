@@ -80,18 +80,18 @@
     </section>
 
     <!-- 创建企业对话框 -->
-    <el-dialog v-model="showDialog" title="创建硬科技企业" width="500px">
+    <el-dialog v-model="showDialog" title="创建硬科技企业" width="500px" append-to-body>
       <el-form :model="form" label-width="100px">
         <el-form-item label="企业名称">
           <el-input v-model="form.name" placeholder="请输入企业名称" />
         </el-form-item>
         <el-form-item label="所属行业">
-          <el-select v-model="form.industry" placeholder="选择行业">
+          <el-select v-model="form.industry" placeholder="选择行业" teleported>
             <el-option v-for="ind in industries" :key="ind" :label="ind" :value="ind" />
           </el-select>
         </el-form-item>
         <el-form-item label="研发阶段">
-          <el-select v-model="form.stage" placeholder="选择研发阶段">
+          <el-select v-model="form.stage" placeholder="选择研发阶段" teleported>
             <el-option label="立项预研" value="立项预研" />
             <el-option label="原型验证" value="原型验证" />
             <el-option label="流片成功" value="流片成功" />

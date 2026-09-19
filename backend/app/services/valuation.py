@@ -95,7 +95,11 @@ def estimate_valuation(db: Session, enterprise_id: str) -> dict:
     if _BK_AVAILABLE and predict_bankruptcy_risk is not None and enterprise.financial_metrics:
         bk_risk = predict_bankruptcy_risk(enterprise.financial_metrics)
         if bk_risk is not None:
-            risk_score = bk_risk
+            rule_risk = compute_risk_score(
+                avg_patent_quality, team_score, patent_count, enterprise.rd_ratio or 0
+            )
+            scaled_bk = min(0.85, max(0.05, bk_risk * 15))
+            risk_score = round(0.5 * rule_risk + 0.5 * scaled_bk, 4)
             risk_source = "bankruptcy_model"
         else:
             risk_source = valuation_source

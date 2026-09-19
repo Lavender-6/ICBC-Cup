@@ -56,6 +56,7 @@ def get_dynamic_credit(db: Session, enterprise_id: str, milestone_progress: floa
 
 def generate_risk_alerts(db: Session, enterprise_id: str) -> list[dict]:
     from app.services.milestone_trigger import check_milestone_alerts
+    from app.models.milestone import MILESTONE_STAGES
 
     milestones = db.query(Milestone).filter(Milestone.enterprise_id == enterprise_id).all()
     alerts = []
@@ -63,6 +64,24 @@ def generate_risk_alerts(db: Session, enterprise_id: str) -> list[dict]:
     for ms in milestones:
         ms_alerts = check_milestone_alerts(ms)
         alerts.extend(ms_alerts)
+
+    stage_map = {}
+    for ms in milestones:
+        if ms.stage in MILESTONE_STAGES:
+            stage_map[MILESTONE_STAGES.index(ms.stage)] = ms
+
+    for i, stage in enumerate(MILESTONE_STAGES):
+        ms = stage_map.get(i)
+        if not ms or ms.status == "pending":
+            continue
+        if i > 0:
+            prev_ms = stage_map.get(i - 1)
+            if not prev_ms or prev_ms.status != "completed":
+                alerts.append({
+                    "type": "tech_route_change",
+                    "severity": "critical",
+                    "message": f"技术路线变更：'{stage}'已启动但前置阶段'{MILESTONE_STAGES[i-1]}'未完成",
+                })
 
     return alerts
 

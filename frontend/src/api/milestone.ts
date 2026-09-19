@@ -26,8 +26,16 @@ export function getMilestones(enterpriseId: string) {
   return request.get<Milestone[]>(`/milestones/${enterpriseId}`)
 }
 
+export function createMilestone(enterpriseId: string, data: { name: string; stage: string; description?: string }) {
+  return request.post<Milestone>(`/milestones/${enterpriseId}`, data)
+}
+
 export function updateProgress(milestoneId: string, progress: number) {
   return request.put<Milestone>(`/milestones/${milestoneId}/progress?progress=${progress}`)
+}
+
+export function deleteMilestone(milestoneId: string) {
+  return request.delete(`/milestones/${milestoneId}`)
 }
 
 export function getTools(milestoneId: string) {

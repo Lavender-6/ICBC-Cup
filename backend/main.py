@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import init_db
-from app.routers import enterprises, milestones, credit
+from app.routers import enterprises, milestones, credit, stats
 
 app = FastAPI(title="工银科创桥 API", version="0.1.0")
 
@@ -17,6 +17,7 @@ app.add_middleware(
 app.include_router(enterprises.router, prefix="/api/enterprises", tags=["enterprises"])
 app.include_router(milestones.router, prefix="/api/milestones", tags=["milestones"])
 app.include_router(credit.router, prefix="/api/credit", tags=["credit"])
+app.include_router(stats.router, prefix="/api/stats", tags=["stats"])
 
 
 @app.on_event("startup")

@@ -2,8 +2,11 @@ import uuid
 import random
 import os
 import sys
+import csv
+import io
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.enterprise import Enterprise
@@ -115,6 +118,19 @@ async def get_enterprise(enterprise_id: str, db: Session = Depends(get_db)):
     return enterprise
 
 
+@router.put("/{enterprise_id}", response_model=EnterpriseResponse)
+async def update_enterprise(enterprise_id: str, data: dict, db: Session = Depends(get_db)):
+    enterprise = db.query(Enterprise).filter(Enterprise.id == enterprise_id).first()
+    if not enterprise:
+        raise HTTPException(status_code=404, detail="Enterprise not found")
+    for field in ["name", "industry", "stage", "description", "founded_year", "employee_count", "rd_ratio"]:
+        if field in data:
+            setattr(enterprise, field, data[field])
+    db.commit()
+    db.refresh(enterprise)
+    return enterprise
+
+
 @router.get("/{enterprise_id}/valuation", response_model=ValuationResponse)
 async def get_valuation(enterprise_id: str, db: Session = Depends(get_db)):
     result = estimate_valuation(db, enterprise_id)
@@ -143,3 +159,80 @@ async def delete_enterprise(enterprise_id: str, db: Session = Depends(get_db)):
     db.delete(enterprise)
     db.commit()
     return {"message": "Deleted"}
+
+
+@router.get("/{enterprise_id}/export")
+async def export_enterprise(enterprise_id: str, db: Session = Depends(get_db)):
+    enterprise = db.query(Enterprise).filter(Enterprise.id == enterprise_id).first()
+    if not enterprise:
+        raise HTTPException(status_code=404, detail="Enterprise not found")
+
+    buf = io.StringIO()
+    buf.write('\ufeff')
+    writer = csv.writer(buf)
+
+    writer.writerow(["=== 企业基本信息 ==="])
+    writer.writerow(["企业名称", "行业", "研发阶段", "成立年份", "员工人数", "研发占比", "基础估值", "当前估值", "风险评分", "描述"])
+    writer.writerow([
+        enterprise.name, enterprise.industry, enterprise.stage,
+        enterprise.founded_year or "", enterprise.employee_count or "",
+        f"{(enterprise.rd_ratio or 0)*100:.0f}%",
+        enterprise.base_valuation, enterprise.current_valuation,
+        f"{enterprise.risk_score*100:.1f}%", enterprise.description or "",
+    ])
+
+    writer.writerow([])
+    writer.writerow(["=== 专利信息 ==="])
+    writer.writerow(["专利编号", "标题", "IPC分类", "被引次数", "引用次数", "专利族大小", "国际申请", "诉讼风险", "申请日期"])
+    patents = db.query(Patent).filter(Patent.enterprise_id == enterprise_id).all()
+    for p in patents:
+        writer.writerow([
+            p.patent_number, p.title, p.ipc_class, p.cited_count, p.cites_count,
+            p.family_size, "是" if p.has_international else "否",
+            f"{p.litigation_risk:.2f}", p.filed_at.strftime("%Y-%m-%d") if p.filed_at else "",
+        ])
+
+    writer.writerow([])
+    writer.writerow(["=== 研发团队 ==="])
+    writer.writerow(["姓名", "角色", "学历", "创始人", "论文数", "引用数", "H指数", "专利数", "经验年数"])
+    members = db.query(TeamMember).filter(TeamMember.enterprise_id == enterprise_id).all()
+    for m in members:
+        writer.writerow([
+            m.name, m.role, m.education, "是" if m.is_founder else "否",
+            m.paper_count, m.citation_count, m.h_index, m.patent_count, m.experience_years,
+        ])
+
+    writer.writerow([])
+    writer.writerow(["=== 里程碑 ==="])
+    writer.writerow(["名称", "阶段", "描述", "预期日期", "实际日期", "进度", "状态", "已验证"])
+    milestones = db.query(Milestone).filter(Milestone.enterprise_id == enterprise_id).order_by(Milestone.expected_date).all()
+    for ms in milestones:
+        writer.writerow([
+            ms.name, ms.stage, ms.description or "",
+            ms.expected_date.strftime("%Y-%m-%d") if ms.expected_date else "",
+            ms.actual_date.strftime("%Y-%m-%d") if ms.actual_date else "",
+            f"{ms.progress*100:.0f}%", ms.status, "是" if ms.is_verified else "否",
+        ])
+
+    writer.writerow([])
+    writer.writerow(["=== 估值分析 ==="])
+    val_result = estimate_valuation(db, enterprise_id)
+    if val_result:
+        v = val_result if isinstance(val_result, dict) else val_result.dict()
+        writer.writerow(["基础估值", v.get("base_valuation", "")])
+        writer.writerow(["当前估值", v.get("current_valuation", "")])
+        writer.writerow(["风险评分", f"{v.get('risk_score', 0)*100:.1f}%"])
+        writer.writerow(["专利数量", v.get("patent_count", "")])
+        writer.writerow(["平均专利质量", f"{v.get('avg_patent_quality', 0):.2f}"])
+        writer.writerow(["团队评分", f"{v.get('team_score', 0):.2f}"])
+        writer.writerow(["行业乘数", f"{v.get('industry_multiplier', 0):.2f}"])
+        writer.writerow(["阶段乘数", f"{v.get('stage_multiplier', 0):.2f}"])
+
+    buf.seek(0)
+    import urllib.parse
+    filename = urllib.parse.quote(f"{enterprise.name}_数据导出.csv")
+    return StreamingResponse(
+        iter([buf.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename*=utf-8''{filename}"},
+    )

@@ -84,6 +84,14 @@ export function createEnterprise(data: CreateEnterpriseParams) {
   return request.post<Enterprise>('/enterprises', data)
 }
 
+export function updateEnterprise(id: string, data: Partial<CreateEnterpriseParams>) {
+  return request.put<Enterprise>(`/enterprises/${id}`, data)
+}
+
 export function deleteEnterprise(id: string) {
   return request.delete(`/enterprises/${id}`)
+}
+
+export function exportEnterprise(id: string) {
+  return request.get(`/enterprises/${id}/export`, { responseType: 'blob' })
 }
