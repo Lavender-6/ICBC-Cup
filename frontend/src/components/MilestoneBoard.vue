@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getMilestones, getTools, updateProgress, createMilestone, deleteMilestone, type Milestone, type FinancialTool } from '@/api/milestone'
+import { getMilestones, getTools, updateProgress, createMilestone, deleteMilestone, type FinancialTool } from '@/api/milestone'
 
 const props = defineProps<{ enterpriseId: string }>()
 const milestones = ref<any[]>([])
