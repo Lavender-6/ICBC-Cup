@@ -1,0 +1,14 @@
+{
+  "slideStyle": "tech",
+  "colorScheme": "Deep Navy + ICBC Red + Gold (对齐工银科创桥官网主题)",
+  "primaryColor": "#E8B34B",
+  "accentColor1": "#C7000B",
+  "accentColor2": "#5B7DBB",
+  "neutralColor": "#9FB4DA",
+  "background": {
+    "type": "color",
+    "value": "#0A1730"
+  },
+  "fontTitle": "'Noto Sans SC', 'Montserrat', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+  "fontBody": "'Noto Sans SC', 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+}
