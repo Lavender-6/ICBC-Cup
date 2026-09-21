@@ -65,7 +65,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getMilestones, getTools, updateProgress, createMilestone, deleteMilestone, type Milestone, type FinancialTool } from '@/api/milestone'
 
 const props = defineProps<{ enterpriseId: string }>()
-const milestones = ref<Milestone[]>([])
+const milestones = ref<any[]>([])
 const tools = ref<Record<string, FinancialTool[]>>({})
 
 const showAddDialog = ref(false)
