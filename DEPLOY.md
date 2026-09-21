@@ -3,23 +3,22 @@
 ## 架构
 
 - **前端** → Vercel (免费)
-- **后端** → Render (免费)
+- **后端** → Koyeb (免费，无需信用卡)
 - **数据库** → SQLite (随后端部署，每次重启自动重新播种数据)
 
-## 步骤一：部署后端到 Render
+## 步骤一：部署后端到 Koyeb
 
-1. 访问 https://dashboard.render.com 并登录（可用 GitHub 登录）
-2. 点击 **New +** → **Web Service**
+1. 访问 https://app.koyeb.com 并注册（可用 GitHub 登录）
+2. 点击 **Create Service** → **GitHub**
 3. 选择 GitHub 仓库 `Lavender-6/ICBC-Cup`
 4. 配置：
-   - **Name**: `icbc-cup-api`
-   - **Root Directory**: `backend`
-   - **Runtime**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. 点击 **Create Web Service**
-6. 等待部署完成，记下后端 URL，例如：`https://icbc-cup-api.onrender.com`
-7. 验证：访问 `https://icbc-cup-api.onrender.com/api/health` 应返回 `{"status":"ok"}`
+   - **Builder**: Docker
+   - **Port**: 8000
+   - **Path**: `/` (根目录，自动检测 Dockerfile)
+   - **Instance Type**: Free (512MB RAM)
+5. 点击 **Deploy**
+6. 等待部署完成（约3-5分钟），记下后端 URL，例如：`https://icbc-cup-api.koyeb.app`
+7. 验证：访问 `https://icbc-cup-api.koyeb.app/api/health` 应返回 `{"status":"ok"}`
 
 ## 步骤二：部署前端到 Vercel
 
@@ -33,8 +32,8 @@
    - **Output Directory**: `dist`
 5. **环境变量**（关键步骤）：
    - **Settings** → **Environment Variables**
-   - 添加：`VITE_API_BASE_URL` = `https://icbc-cup-api.onrender.com/api`
-   - （把 `icbc-cup-api.onrender.com` 替换为你的实际 Render URL）
+   - 添加：`VITE_API_BASE_URL` = `https://icbc-cup-api.koyeb.app/api`
+   - （把 `icbc-cup-api.koyeb.app` 替换为你的实际 Koyeb URL）
 6. 点击 **Deploy**
 7. 等待部署完成，获得前端 URL，例如：`https://icbc-cup.vercel.app`
 
@@ -46,7 +45,7 @@
 
 ## 注意事项
 
-- Render 免费 tier 会在 15 分钟无请求后休眠，首次唤醒需等待 ~30 秒
-- SQLite 数据在 Render 重启后会重置，但启动时自动重新播种演示数据
-- AI 模型文件（.joblib）已包含在仓库中，无需额外配置
-- 如需自定义域名，在 Vercel/Render 的 Settings → Domains 中添加
+- Koyeb 免费方案 512MB RAM，足够运行 FastAPI + XGBoost 推理
+- SQLite 数据在 Koyeb 重启后会重置，但启动时自动重新播种演示数据
+- AI 模型文件（.joblib，约3.7MB）已包含在 Docker 镜像中
+- 如需自定义域名，在 Koyeb/Vercel 的 Settings → Domains 中添加
