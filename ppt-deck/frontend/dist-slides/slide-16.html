@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工银科创桥 | 硬科技企业里程碑式投贷联动平台</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #E8B34B;
+            --accent-color-1: #C7000B;
+            --accent-color-2: #5B7DBB;
+            --neutral-color: #9FB4DA;
+            --slide-background: #0A1730;
+            --font-title: 'Noto Sans SC', 'Montserrat', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --font-body: 'Noto Sans SC', 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+    </style>
+    <style>
+        .nav-btn, .page-indicator {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="slide-page" style="font-family: 'Noto Sans SC', sans-serif; background: var(--slide-background); background-size: cover; background-repeat: no-repeat; background-image: url('/assets/images/bg-lab-human.png'); background-position: center right">
+
+    <div style="background: linear-gradient(112deg, rgba(10,23,48,0.97) 0%, rgba(10,23,48,0.93) 40%, rgba(14,33,69,0.70) 70%, rgba(20,48,97,0.50) 100%)"></div>
+    <div style="top: -200px; left: -160px; width: 700px; height: 700px; border-radius: 9999px; background: radial-gradient(circle, rgba(232,179,75,0.20) 0%, rgba(232,179,75,0) 68%)"></div>
+    <div style="bottom: -220px; right: -160px; width: 680px; height: 680px; border-radius: 9999px; background: radial-gradient(circle, rgba(199,0,11,0.16) 0%, rgba(199,0,11,0) 70%)"></div>
+
+    <div style="margin-top: 45px">
+
+      <!-- 页眉 -->
+      <div>
+        <span style="background: linear-gradient(180deg,#E8B34B,#C7000B)"></span>
+        <span>PART 02 · AI 引擎</span>
+      </div>
+      <h2 style="font-size: inherit; font-weight: inherit; color: #F5D488">两个 XGBoost 模型，撑起估值与风险两侧</h2>
+      <div style="background: linear-gradient(90deg,#C7000B,#E8B34B)"></div>
+
+      <!-- 双模型 -->
+      <div>
+        <!-- 估值模型 -->
+        <div style="background: rgba(14,33,69,0.74); border: 1px solid rgba(91,125,187,0.30); border-top: 4px solid #E8B34B; backdrop-filter: blur(8px)">
+          <div>
+            <span style="color: #F5D488">估值预测模型</span>
+            <span style="background: rgba(232,179,75,0.14); border: 1px solid rgba(232,179,75,0.45); color: #F5D488">Regressor</span>
+          </div>
+
+          <!-- 核心指标 -->
+          <div>
+            <div style="background: rgba(10,23,48,0.60); border: 1px solid rgba(232,179,75,0.32)">
+              <div style="font-family: 'Noto Sans SC', sans-serif; color: #F5D488">0.927</div>
+              <div>基础估值 R²</div>
+            </div>
+            <div style="background: rgba(10,23,48,0.60); border: 1px solid rgba(232,179,75,0.32)">
+              <div style="font-family: 'Noto Sans SC', sans-serif; color: #F5D488">0.954</div>
+              <div>当前估值 R²</div>
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <span>训练样本</span><span style="color: #E0E6F0">2000 条硬科技企业数据</span>
+            </div>
+            <div>
+              <span>输入特征</span><span style="color: #E0E6F0">8 个（含行业与阶段类别）</span>
+            </div>
+            <div>
+              <span>模型配置</span><span style="color: #E0E6F0">300 棵树 · max_depth = 6</span>
+            </div>
+            <div>
+              <span>预处理</span><span style="color: #E0E6F0">OneHotEncoder ＋ 数值直通</span>
+            </div>
+          </div>
+
+          <div style="border-top: 1px dashed rgba(91,125,187,0.30)">
+            <div>特 征 工 程</div>
+            <p style="color: #E0E6F0">
+              引入非线性与交互项：patent_count^0.7、team_score^1.5、log(employee_count)、√（质量 × 团队评分）
+            </p>
+          </div>
+        </div>
+
+        <!-- 风险模型 -->
+        <div style="background: rgba(14,33,69,0.74); border: 1px solid rgba(91,125,187,0.30); border-top: 4px solid #C7000B; backdrop-filter: blur(8px)">
+          <div>
+            <span style="color: #F5D488">破产风险预测模型</span>
+            <span style="background: rgba(199,0,11,0.16); border: 1px solid rgba(199,0,11,0.45); color: #FF5A4E">Classifier</span>
+          </div>
+
+          <div>
+            <div style="background: rgba(10,23,48,0.60); border: 1px solid rgba(199,0,11,0.32)">
+              <div style="font-family: 'Noto Sans SC', sans-serif; color: #FF5A4E">0.958</div>
+              <div>AUC</div>
+            </div>
+            <div style="background: rgba(10,23,48,0.60); border: 1px solid rgba(199,0,11,0.32)">
+              <div style="font-family: 'Noto Sans SC', sans-serif; color: #FF5A4E">96.9<span>%</span></div>
+              <div>Accuracy</div>
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <span>训练数据</span><span style="color: #E0E6F0">真实企业财务公开数据集 6819 条</span>
+            </div>
+            <div>
+              <span>特征维度</span><span style="color: #E0E6F0">95 个财务特征</span>
+            </div>
+            <div>
+              <span>类别分布</span><span style="color: #E0E6F0">未破产 6599 vs 破产 220</span>
+            </div>
+            <div>
+              <span>不平衡处理</span><span style="color: #E0E6F0">scale_pos_weight = 30</span>
+            </div>
+          </div>
+
+          <div style="border-top: 1px dashed rgba(91,125,187,0.30)">
+            <div>T O P 5 特 征</div>
+            <p style="color: #E0E6F0">
+              税后持续利率 12.9% · 近四季持续 EPS 7.7% · 净利润/总资产 7.4% · 净值/资产 4.1% · 借款依赖度 4.1%
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 推理链路 -->
+      <div style="background: rgba(14,33,69,0.62); border-left: 4px solid #E8B34B; backdrop-filter: blur(8px)">
+        <span style="color: #E8B34B">推理链路</span>
+        <span style="color: #E0E6F0">
+          请求进入 → 组装特征（专利数 · PageRank 质量 · 团队评分） → <span style="color: #F5D488">双模型并行推理</span> → 输出基础/当前估值与风险评分 → 异常时回退规则公式
+        </span>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

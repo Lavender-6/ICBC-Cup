@@ -17,6 +17,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
+// 注：本机 node 22 在 Windows 上执行 fs.cpSync 会以 127 静默退出，改用递归复制
+function copyDir(src, dst) {
+  fs.mkdirSync(dst, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const s = path.join(src, entry.name);
+    const d = path.join(dst, entry.name);
+    if (entry.isDirectory()) {
+      copyDir(s, d);
+    } else {
+      fs.copyFileSync(s, d);
+    }
+  }
+}
+
 // 输出目录
 const outputDir = path.join(rootDir, 'dist-slides');
 
@@ -116,7 +130,8 @@ export default {
   // 运行 Tailwind CLI
   const tempCssOutput = path.join(tempDir, 'output.css');
   try {
-    execSync(`npx tailwindcss -i "${tempCssInput}" -o "${tempCssOutput}" -c "${tempTailwindConfig}"`, {
+    const twCli = path.join(rootDir, 'node_modules', 'tailwindcss', 'lib', 'cli.js');
+    execSync(`"${process.execPath}" "${twCli}" -i "${tempCssInput}" -o "${tempCssOutput}" -c "${tempTailwindConfig}"`, {
       cwd: rootDir,
       stdio: 'pipe'
     });
@@ -296,7 +311,7 @@ async function main() {
   const assetsDestDir = path.join(outputDir, 'assets');
   if (fs.existsSync(assetsSourceDir)) {
     console.log('📁 复制 assets 目录...');
-    fs.cpSync(assetsSourceDir, assetsDestDir, { recursive: true });
+    copyDir(assetsSourceDir, assetsDestDir);
   }
 
   // 生成每个 slide 的 HTML 文件
