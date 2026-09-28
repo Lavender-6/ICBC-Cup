@@ -54,3 +54,9 @@ logs/
 
 # SQLite
 *.db
+
+# Office temp
+~$*
+
+# Workbuddy internal
+.workbuddy/
